@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TFG_Back.Data;
@@ -9,9 +10,10 @@ using TFG_Back.Data;
 namespace TFG_Back.Migrations
 {
     [DbContext(typeof(TFG_BackContext))]
-    partial class TFG_BackContextModelSnapshot : ModelSnapshot
+    [Migration("20210503115321_Migration2")]
+    partial class Migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,11 +195,6 @@ namespace TFG_Back.Migrations
                 {
                     b.HasBaseType("TFG_Back.Models.User");
 
-                    b.Property<long?>("ProfesorId")
-                        .HasColumnType("bigint");
-
-                    b.HasIndex("ProfesorId");
-
                     b.HasDiscriminator().HasValue("Tutor");
                 });
 
@@ -255,20 +252,6 @@ namespace TFG_Back.Migrations
                         .WithMany("Alumno")
                         .HasForeignKey("TutorId");
 
-                    b.Navigation("Tutor");
-                });
-
-            modelBuilder.Entity("TFG_Back.Models.Tutor", b =>
-                {
-                    b.HasOne("TFG_Back.Models.Profesor", "Profesor")
-                        .WithMany("Tutor")
-                        .HasForeignKey("ProfesorId");
-
-                    b.Navigation("Profesor");
-                });
-
-            modelBuilder.Entity("TFG_Back.Models.Profesor", b =>
-                {
                     b.Navigation("Tutor");
                 });
 

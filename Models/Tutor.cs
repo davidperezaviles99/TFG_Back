@@ -8,6 +8,9 @@ namespace TFG_Back.Models
 {
     public class Tutor: User
     {
+
         public List<Alumno> Alumno { get; set; }
+
+        public Profesor Profesor { get; set; }
     }
 }

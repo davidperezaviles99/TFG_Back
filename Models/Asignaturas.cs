@@ -19,5 +19,7 @@ namespace TFG_Back.Models
 
         [StringLength(30, MinimumLength = 2)]
         public string Asignatura { get; set; }
+
+        public Profesor Profesor { get; set; }
     }
 }

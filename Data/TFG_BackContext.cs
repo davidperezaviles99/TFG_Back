@@ -9,12 +9,18 @@ namespace TFG_Back.Data
 {
     public class TFG_BackContext : DbContext
     {
-        public TFG_BackContext (DbContextOptions<TFG_BackContext> options)
+        public TFG_BackContext(DbContextOptions<TFG_BackContext> options)
             : base(options)
         {
         }
 
         public DbSet<TFG_Back.Models.User> User { get; set; }
+
+        public DbSet<TFG_Back.Models.Profesor> Profesor { get; set; }
+
+        public DbSet<TFG_Back.Models.Tutor> Tutor { get; set; }
+
+        public DbSet<TFG_Back.Models.Alumno> Alumno { get; set; }
 
         public DbSet<TFG_Back.Models.Mensaje> Mensaje { get; set; }
 

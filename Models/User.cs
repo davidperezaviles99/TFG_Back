@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TFG_Back.Models
 {
-    public class User
+    public abstract class User
     {
         [Key]
         public long Id { get; set; }
