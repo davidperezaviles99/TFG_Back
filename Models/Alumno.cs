@@ -10,7 +10,7 @@ namespace TFG_Back.Models
 
         public Tutor Tutor { get; set; }
 
-        public List<Profesor> Profesor { get; set; }
+        public Curso Curso { get; set; }
 
     }
 }

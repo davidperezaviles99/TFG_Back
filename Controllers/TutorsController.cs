@@ -27,7 +27,7 @@ namespace TFG_Back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tutor>>> GetTutor()
         {
-            return await _context.Tutor.ToListAsync();
+            return await _context.Tutor.Include("Profesor").Include("Alumno").ToListAsync();
 
         }
 
@@ -35,7 +35,7 @@ namespace TFG_Back.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Tutor>> GetTutor(long id)
         {
-            var tutor = await _context.Tutor.FindAsync(id);
+            var tutor = await _context.Tutor.Include("Profesor").Include("Alumno").FirstOrDefaultAsync(u => u.Id == id);
 
             if (tutor == null)
             {
@@ -47,9 +47,11 @@ namespace TFG_Back.Controllers
 
         // PUT: api/Tutors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Password,Role")] Tutor tutor)
         {
+            var tutors = await _context.Tutor.Include("Profesor").Include("Alumno").FirstOrDefaultAsync(u => u.Id == tutor.Id);
+
             if (id != tutor.Id)
             {
                 return BadRequest();

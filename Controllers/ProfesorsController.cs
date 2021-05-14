@@ -27,7 +27,7 @@ namespace TFG_Back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Profesor>>> GetProfesor()
         {
-            return await _context.Profesor.ToListAsync();
+            return await _context.Profesor.Include("Tutor").ToListAsync();
             
         }
 
@@ -35,7 +35,7 @@ namespace TFG_Back.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Profesor>> GetProfesor(long id)
         {
-            var profesor = await _context.Profesor.FindAsync(id);
+            var profesor = await _context.Profesor.Include("Tutor").FirstOrDefaultAsync(u => u.Id == id);
 
             if (profesor == null)
             {
@@ -47,9 +47,11 @@ namespace TFG_Back.Controllers
 
         // PUT: api/Profesor/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Password,Role")] Profesor profesor)
         {
+            var profesors = await _context.Profesor.Include("Tutor").FirstOrDefaultAsync(u => u.Id == profesor.Id);
+
             if (id != profesor.Id)
             {
                 return BadRequest();
@@ -86,6 +88,7 @@ namespace TFG_Back.Controllers
             var hashed = BCrypt.Net.BCrypt.HashPassword(profesor.Password, 10);
             profesor.Password = hashed;
 
+            _context.Entry(profesor).State = EntityState.Unchanged;
             _context.Profesor.Add(profesor);
             await _context.SaveChangesAsync();
 

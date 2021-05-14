@@ -6,19 +6,27 @@ using System.Threading.Tasks;
 
 namespace TFG_Back.Models
 {
-    public class Asignaturas
+    public class Curso
     {
         [Key]
         public long Id { get; set; }
 
         [StringLength(30, MinimumLength = 1)]
-        public long Codigo { get; set; }
+        [Required]
+        public int Numero { get; set; }
 
-        [StringLength(30, MinimumLength = 2)]
+        [StringLength(30, MinimumLength = 1)]
+        [Required]
         public string Name { get; set; }
 
-        public Profesor Profesor { get; set; }
 
-        public Curso Curso { get; set; }
+
     }
+    
+
+        
+
+    
+
+
 }

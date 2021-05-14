@@ -46,7 +46,11 @@ namespace TFG_Back
                                                   .AllowAnyMethod();
                                   });
             });
-        
+
+            services.AddControllers().AddNewtonsoftJson(options =>
+               options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
 
             services.AddDbContext<TFG_BackContext>(options =>
                         options.UseNpgsql(Configuration.GetConnectionString("TFG_BackContext")));
