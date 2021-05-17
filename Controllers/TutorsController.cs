@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TFG_Back.Data;
+using TFG_Back.DTOs;
 using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
@@ -27,7 +28,7 @@ namespace TFG_Back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tutor>>> GetTutor()
         {
-            return await _context.Tutor.Include("Profesor").Include("Alumno").ToListAsync();
+            return await _context.Tutor.Include("Alumno").ToListAsync();
 
         }
 
@@ -35,7 +36,7 @@ namespace TFG_Back.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Tutor>> GetTutor(long id)
         {
-            var tutor = await _context.Tutor.Include("Profesor").Include("Alumno").FirstOrDefaultAsync(u => u.Id == id);
+            var tutor = await _context.Tutor.Include("Alumno").FirstOrDefaultAsync(u => u.Id == id);
 
             if (tutor == null)
             {
@@ -48,18 +49,16 @@ namespace TFG_Back.Controllers
         // PUT: api/Tutors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Password,Role")] Tutor tutor)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Role")] TutorDTO tutorDTO)
         {
-            var tutors = await _context.Tutor.Include("Profesor").Include("Alumno").FirstOrDefaultAsync(u => u.Id == tutor.Id);
+            var tutors = await _context.Tutor.Include("Alumno").FirstOrDefaultAsync(u => u.Id == tutorDTO.Id);
 
-            if (id != tutor.Id)
+            if (tutors == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            var hashed = BCrypt.Net.BCrypt.HashPassword(tutor.Password, 10);
-            tutor.Password = hashed;
-            _context.Entry(tutor).State = EntityState.Modified;
+            _context.Entry(tutors).CurrentValues.SetValues(tutorDTO);
 
             try
             {
@@ -68,7 +67,7 @@ namespace TFG_Back.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TutorExists(id))
+                if (!TutorExists(tutorDTO.Id))
                 {
                     return NotFound();
                 }

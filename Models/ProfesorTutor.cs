@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace TFG_Back.Models
 {
-    public class Tutor: User
+    public class ProfesorTutor
     {
+        public long Id { get; set; }
 
-        public List<Alumno> Alumno { get; set; }
+        public Profesor Profesor { get; set; }
 
+        public Tutor Tutor { get; set; }
     }
 }

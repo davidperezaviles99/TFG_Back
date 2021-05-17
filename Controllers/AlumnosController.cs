@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TFG_Back.Data;
+using TFG_Back.DTOs;
 using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
@@ -48,18 +49,16 @@ namespace TFG_Back.Controllers
         // PUT: api/Alumnos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Password,Role")] Alumno alumno)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Role")] AlumnoDTO alumnoDTO)
         {
-            var alumnos = await _context.Alumno.Include("Tutor").FirstOrDefaultAsync(u => u.Id == alumno.Id);
+            var alumnos = await _context.Alumno.Include("Tutor").FirstOrDefaultAsync(u => u.Id == alumnoDTO.Id);
 
-            if (id != alumno.Id)
+            if (alumnos == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            var hashed = BCrypt.Net.BCrypt.HashPassword(alumno.Password, 10);
-            alumno.Password = hashed;
-            _context.Entry(alumno).State = EntityState.Modified;
+            _context.Entry(alumnos).CurrentValues.SetValues(alumnoDTO);
 
             try
             {
@@ -68,7 +67,7 @@ namespace TFG_Back.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AlumnoExists(id))
+                if (!AlumnoExists(alumnoDTO.Id))
                 {
                     return NotFound();
                 }

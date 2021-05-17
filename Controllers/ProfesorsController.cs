@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TFG_Back.Data;
+using TFG_Back.DTOs;
 using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
@@ -27,7 +28,7 @@ namespace TFG_Back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Profesor>>> GetProfesor()
         {
-            return await _context.Profesor.Include("Tutor").ToListAsync();
+            return await _context.Profesor.ToListAsync();
             
         }
 
@@ -35,7 +36,7 @@ namespace TFG_Back.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Profesor>> GetProfesor(long id)
         {
-            var profesor = await _context.Profesor.Include("Tutor").FirstOrDefaultAsync(u => u.Id == id);
+            var profesor = await _context.Profesor.FirstOrDefaultAsync(u => u.Id == id);
 
             if (profesor == null)
             {
@@ -48,18 +49,16 @@ namespace TFG_Back.Controllers
         // PUT: api/Profesor/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Password,Role")] Profesor profesor)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Role")] ProfesorDTO profesorDTO)
         {
-            var profesors = await _context.Profesor.Include("Tutor").FirstOrDefaultAsync(u => u.Id == profesor.Id);
+            var profesors = await _context.Profesor.Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == profesorDTO.Id);
 
-            if (id != profesor.Id)
+            if(profesors == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            var hashed = BCrypt.Net.BCrypt.HashPassword(profesor.Password, 10);
-            profesor.Password = hashed;
-            _context.Entry(profesor).State = EntityState.Modified;
+            _context.Entry(profesors).CurrentValues.SetValues(profesorDTO);
 
             try
             {
@@ -68,7 +67,7 @@ namespace TFG_Back.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProfesorExists(id))
+                if (!ProfesorExists(profesorDTO.Id))
                 {
                     return NotFound();
                 }

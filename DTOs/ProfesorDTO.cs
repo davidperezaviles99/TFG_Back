@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+using TFG_Back.Models;
 
-namespace TFG_Back.Models
+namespace TFG_Back.DTOs
 {
-    public class Profesor: User
+    public class ProfesorDTO : UsersDTO
     {
-        
         public List<Asignaturas> Asignaturas { get; set; }
+
     }
 }

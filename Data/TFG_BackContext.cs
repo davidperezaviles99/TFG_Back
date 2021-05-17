@@ -22,8 +22,11 @@ namespace TFG_Back.Data
 
         public DbSet<TFG_Back.Models.Alumno> Alumno { get; set; }
 
+        public DbSet<TFG_Back.Models.ProfesorTutor> ProfesorTutor { get; set; }
+
         public DbSet<TFG_Back.Models.Mensaje> Mensaje { get; set; }
 
+        public DbSet<TFG_Back.Models.Curso> Curso { get; set; }
         public DbSet<TFG_Back.Models.Diario> Diario { get; set; }
 
         public DbSet<TFG_Back.Models.Asignaturas> Asignaturas { get; set; }

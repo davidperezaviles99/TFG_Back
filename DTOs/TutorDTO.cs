@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using TFG_Back.Models;
 
-namespace TFG_Back.Models
+namespace TFG_Back.DTOs
 {
-    public class Tutor: User
+    public class TutorDTO: UsersDTO
     {
 
         public List<Alumno> Alumno { get; set; }
-
     }
 }
