@@ -12,7 +12,7 @@ namespace TFG_Back.Models
         public long Id { get; set; }
 
         [Required]
-        public User User { get; set; }
+        public Equipo Equipo { get; set; }
 
         [StringLength(150, MinimumLength = 2)]
         [Required]

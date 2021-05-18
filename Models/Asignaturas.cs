@@ -19,6 +19,5 @@ namespace TFG_Back.Models
 
         public Profesor Profesor { get; set; }
 
-        public Curso Curso { get; set; }
     }
 }

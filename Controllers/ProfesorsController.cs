@@ -51,7 +51,7 @@ namespace TFG_Back.Controllers
         [HttpPut]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Role")] ProfesorDTO profesorDTO)
         {
-            var profesors = await _context.Profesor.Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == profesorDTO.Id);
+            var profesors = await _context.Profesor.FirstOrDefaultAsync(u => u.Id == profesorDTO.Id);
 
             if(profesors == null)
             {

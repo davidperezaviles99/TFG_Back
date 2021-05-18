@@ -33,7 +33,7 @@ namespace TFG_Back.Models
         [StringLength(2, MinimumLength = 1)]
         public string EvaluacionP { get; set; }
 
-        public Alumno Alumno { get; set; }
+        public Equipo Equipo { get; set; }
 
         public Asignaturas Asignaturas { get; set; }
     }

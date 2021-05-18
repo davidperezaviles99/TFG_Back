@@ -9,7 +9,9 @@ namespace TFG_Back.Models
     public class Tutor: User
     {
 
-        public List<Alumno> Alumno { get; set; }
+        [StringLength(70, MinimumLength = 2)]
+        [Required]
+        public string NombreEmpresa { get; set; }
 
     }
 }

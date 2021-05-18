@@ -9,6 +9,6 @@ namespace TFG_Back.DTOs
     public class TutorDTO: UsersDTO
     {
 
-        public List<Alumno> Alumno { get; set; }
+        public string NombreEmpresa { get; set; }
     }
 }

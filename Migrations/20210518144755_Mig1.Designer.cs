@@ -10,31 +10,16 @@ using TFG_Back.Data;
 namespace TFG_Back.Migrations
 {
     [DbContext(typeof(TFG_BackContext))]
-    [Migration("20210503115321_Migration2")]
-    partial class Migration2
+    [Migration("20210518144755_Mig1")]
+    partial class Mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.5")
+                .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("AlumnoProfesor", b =>
-                {
-                    b.Property<long>("AlumnoId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ProfesorId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("AlumnoId", "ProfesorId");
-
-                    b.HasIndex("ProfesorId");
-
-                    b.ToTable("AlumnoProfesor");
-                });
 
             modelBuilder.Entity("TFG_Back.Models.Asignaturas", b =>
                 {
@@ -43,15 +28,11 @@ namespace TFG_Back.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Asignatura")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
                     b.Property<long>("Codigo")
                         .HasMaxLength(30)
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Curso")
+                    b.Property<string>("Name")
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
@@ -65,15 +46,38 @@ namespace TFG_Back.Migrations
                     b.ToTable("Asignaturas");
                 });
 
-            modelBuilder.Entity("TFG_Back.Models.Diario", b =>
+            modelBuilder.Entity("TFG_Back.Models.Curso", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<long?>("AlumnoId")
+                    b.Property<long?>("AsignaturasId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("Numero")
+                        .HasMaxLength(30)
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AsignaturasId");
+
+                    b.ToTable("Curso");
+                });
+
+            modelBuilder.Entity("TFG_Back.Models.Diario", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<long?>("AsignaturasId")
                         .HasColumnType("bigint");
@@ -85,6 +89,9 @@ namespace TFG_Back.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<long?>("EquipoId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("EvaluacionP")
                         .HasMaxLength(2)
@@ -104,11 +111,38 @@ namespace TFG_Back.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AlumnoId");
-
                     b.HasIndex("AsignaturasId");
 
+                    b.HasIndex("EquipoId");
+
                     b.ToTable("Diario");
+                });
+
+            modelBuilder.Entity("TFG_Back.Models.Equipo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long?>("AlumnoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ProfesorId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TutorId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlumnoId");
+
+                    b.HasIndex("ProfesorId");
+
+                    b.HasIndex("TutorId");
+
+                    b.ToTable("Equipo");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Mensaje", b =>
@@ -123,12 +157,12 @@ namespace TFG_Back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<long?>("UserId")
+                    b.Property<long?>("EquipoId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("EquipoId");
 
                     b.ToTable("Mensaje");
                 });
@@ -176,10 +210,10 @@ namespace TFG_Back.Migrations
                 {
                     b.HasBaseType("TFG_Back.Models.User");
 
-                    b.Property<long?>("TutorId")
+                    b.Property<long?>("CursoId")
                         .HasColumnType("bigint");
 
-                    b.HasIndex("TutorId");
+                    b.HasIndex("CursoId");
 
                     b.HasDiscriminator().HasValue("Alumno");
                 });
@@ -195,22 +229,12 @@ namespace TFG_Back.Migrations
                 {
                     b.HasBaseType("TFG_Back.Models.User");
 
+                    b.Property<string>("NombreEmpresa")
+                        .IsRequired()
+                        .HasMaxLength(70)
+                        .HasColumnType("character varying(70)");
+
                     b.HasDiscriminator().HasValue("Tutor");
-                });
-
-            modelBuilder.Entity("AlumnoProfesor", b =>
-                {
-                    b.HasOne("TFG_Back.Models.Alumno", null)
-                        .WithMany()
-                        .HasForeignKey("AlumnoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TFG_Back.Models.Profesor", null)
-                        .WithMany()
-                        .HasForeignKey("ProfesorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Asignaturas", b =>
@@ -222,40 +246,70 @@ namespace TFG_Back.Migrations
                     b.Navigation("Profesor");
                 });
 
+            modelBuilder.Entity("TFG_Back.Models.Curso", b =>
+                {
+                    b.HasOne("TFG_Back.Models.Asignaturas", "Asignaturas")
+                        .WithMany()
+                        .HasForeignKey("AsignaturasId");
+
+                    b.Navigation("Asignaturas");
+                });
+
             modelBuilder.Entity("TFG_Back.Models.Diario", b =>
+                {
+                    b.HasOne("TFG_Back.Models.Asignaturas", "Asignaturas")
+                        .WithMany()
+                        .HasForeignKey("AsignaturasId");
+
+                    b.HasOne("TFG_Back.Models.Equipo", "Equipo")
+                        .WithMany()
+                        .HasForeignKey("EquipoId");
+
+                    b.Navigation("Asignaturas");
+
+                    b.Navigation("Equipo");
+                });
+
+            modelBuilder.Entity("TFG_Back.Models.Equipo", b =>
                 {
                     b.HasOne("TFG_Back.Models.Alumno", "Alumno")
                         .WithMany()
                         .HasForeignKey("AlumnoId");
 
-                    b.HasOne("TFG_Back.Models.Asignaturas", "Asignaturas")
+                    b.HasOne("TFG_Back.Models.Profesor", "Profesor")
                         .WithMany()
-                        .HasForeignKey("AsignaturasId");
+                        .HasForeignKey("ProfesorId");
+
+                    b.HasOne("TFG_Back.Models.Tutor", "Tutor")
+                        .WithMany()
+                        .HasForeignKey("TutorId");
 
                     b.Navigation("Alumno");
 
-                    b.Navigation("Asignaturas");
-                });
-
-            modelBuilder.Entity("TFG_Back.Models.Mensaje", b =>
-                {
-                    b.HasOne("TFG_Back.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TFG_Back.Models.Alumno", b =>
-                {
-                    b.HasOne("TFG_Back.Models.Tutor", "Tutor")
-                        .WithMany("Alumno")
-                        .HasForeignKey("TutorId");
+                    b.Navigation("Profesor");
 
                     b.Navigation("Tutor");
                 });
 
-            modelBuilder.Entity("TFG_Back.Models.Tutor", b =>
+            modelBuilder.Entity("TFG_Back.Models.Mensaje", b =>
+                {
+                    b.HasOne("TFG_Back.Models.Equipo", "Equipo")
+                        .WithMany()
+                        .HasForeignKey("EquipoId");
+
+                    b.Navigation("Equipo");
+                });
+
+            modelBuilder.Entity("TFG_Back.Models.Alumno", b =>
+                {
+                    b.HasOne("TFG_Back.Models.Curso", "Curso")
+                        .WithMany("Alumno")
+                        .HasForeignKey("CursoId");
+
+                    b.Navigation("Curso");
+                });
+
+            modelBuilder.Entity("TFG_Back.Models.Curso", b =>
                 {
                     b.Navigation("Alumno");
                 });

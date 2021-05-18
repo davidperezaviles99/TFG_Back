@@ -19,14 +19,9 @@ namespace TFG_Back.Models
         [Required]
         public string Name { get; set; }
 
+        public Asignaturas Asignaturas { get; set; }
 
-
+        public List<Alumno> Alumno { get; set; }
     }
-    
-
-        
-
-    
-
 
 }

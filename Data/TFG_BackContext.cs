@@ -22,7 +22,7 @@ namespace TFG_Back.Data
 
         public DbSet<TFG_Back.Models.Alumno> Alumno { get; set; }
 
-        public DbSet<TFG_Back.Models.ProfesorTutor> ProfesorTutor { get; set; }
+        public DbSet<TFG_Back.Models.Equipo> Equipo { get; set; }
 
         public DbSet<TFG_Back.Models.Mensaje> Mensaje { get; set; }
 

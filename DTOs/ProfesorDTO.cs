@@ -8,7 +8,6 @@ namespace TFG_Back.DTOs
 {
     public class ProfesorDTO : UsersDTO
     {
-        public List<Asignaturas> Asignaturas { get; set; }
 
     }
 }
