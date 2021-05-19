@@ -4,10 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TFG_Back.Data;
+using TFG_Back.DTOs;
 using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
@@ -17,10 +19,12 @@ namespace TFG_Back.Controllers
     public class AsignaturasController : Controller
     {
         private readonly TFG_BackContext _context;
+        private readonly IMapper _mapper;
 
-        public AsignaturasController(TFG_BackContext context)
+        public AsignaturasController(TFG_BackContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Asignaturas
@@ -33,7 +37,7 @@ namespace TFG_Back.Controllers
 
         // GET: api/Asignaturas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Asignaturas>> GetAsignaturas(long id)
+        public async Task<ActionResult<Asignaturas>> GetAsignatura(long id)
         {
             var asignaturas = await _context.Asignaturas.Include("Profesor").FirstOrDefaultAsync(u => u.Id == id);
 
@@ -44,20 +48,21 @@ namespace TFG_Back.Controllers
 
             return asignaturas;
         }
-
+           
         // PUT: api/Asignaturas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Codigo,Curso,Asignatura")] Asignaturas asignaturas)
+        [HttpPut]
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Codigo,Curso,Asignatura")] AsignaturasDTO asignaturasDTO)
         {
-            var asignatura = await _context.Asignaturas.Include("Profesor").FirstOrDefaultAsync(u => u.Id == asignaturas.Id);
+            
+            var asignatura = await _context.Asignaturas.FirstOrDefaultAsync(u => u.Id == asignaturasDTO.Id);
 
-            if (id != asignaturas.Id)
+            if (asignatura == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(asignaturas).State = EntityState.Modified;
+            _context.Entry(asignatura).CurrentValues.SetValues(asignaturasDTO);
 
             try
             {
@@ -66,7 +71,7 @@ namespace TFG_Back.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AsignaturasExists(id))
+                if (!AsignaturasExists(asignaturasDTO.Id))
                 {
                     return NotFound();
                 }
@@ -80,9 +85,12 @@ namespace TFG_Back.Controllers
         // POST: api/Asignaturas/create
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("create")]
-        public async Task<HttpResponseMessage> Create([Bind("Id,Codigo,Curso,Asignatura")] Asignaturas asignaturas)
+        public async Task<HttpResponseMessage> Create([Bind("Id,Codigo,Curso,Asignatura")] AsignaturasDTO asignaturasDTO)
         {
-            var asignatura = await _context.Asignaturas.Include("Profesor").FirstOrDefaultAsync(u => u.Id == asignaturas.Id);
+
+            var asignaturas = _mapper.Map<Asignaturas>(asignaturasDTO);
+
+            _context.Entry(asignaturas).State = EntityState.Unchanged;
 
             _context.Asignaturas.Add(asignaturas);
             await _context.SaveChangesAsync();

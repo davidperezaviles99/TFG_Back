@@ -29,6 +29,9 @@ namespace TFG_Back.Data
         public DbSet<TFG_Back.Models.Curso> Curso { get; set; }
         public DbSet<TFG_Back.Models.Diario> Diario { get; set; }
 
-        public DbSet<TFG_Back.Models.Asignaturas> Asignaturas { get; set; }
+        public DbSet<TFG_Back.Models.Asignaturas> Asignaturas { get; set; } 
+        
     }
-}
+
+   
+  }

@@ -13,7 +13,7 @@ namespace TFG_Back.Models
 
         [StringLength(30, MinimumLength = 1)]
         [Required]
-        public int Numero { get; set; }
+        public long Numero { get; set; }
 
         [StringLength(30, MinimumLength = 1)]
         [Required]

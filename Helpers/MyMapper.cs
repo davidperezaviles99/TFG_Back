@@ -15,6 +15,24 @@ namespace TFG_Back.Helpers
         {
             CreateMap<User, UsersDTO>();
 
+            CreateMap<UsersDTO, User>();
+
+            CreateMap<Alumno, AlumnoDTO>();
+
+            CreateMap<AlumnoDTO, Alumno>();
+
+            CreateMap<Tutor, TutorDTO>();
+
+            CreateMap<TutorDTO, Tutor>();
+
+            CreateMap<Profesor, ProfesorDTO>();
+
+            CreateMap<ProfesorDTO, Profesor>();
+
+            CreateMap<Asignaturas, AsignaturasDTO>();
+
+            CreateMap<AsignaturasDTO, Asignaturas>();
+
         }
         
     }

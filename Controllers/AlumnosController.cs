@@ -28,7 +28,7 @@ namespace TFG_Back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Alumno>>> GetAlumno()
         {
-            return await _context.Alumno.ToListAsync();
+            return await _context.Alumno.Include(i => i.Equipo).Include("Curso").ToListAsync();
 
         }
 
@@ -36,7 +36,7 @@ namespace TFG_Back.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Alumno>> GetAlumno(long id)
         {
-            var alumno = await _context.Alumno.FirstOrDefaultAsync(u => u.Id == id);
+            var alumno = await _context.Alumno.Include(i => i.Equipo).Include("Curso").FirstOrDefaultAsync(u => u.Id == id);
 
             if (alumno == null)
             {
@@ -51,7 +51,7 @@ namespace TFG_Back.Controllers
         [HttpPut]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Role")] AlumnoDTO alumnoDTO)
         {
-            var alumnos = await _context.Alumno.FirstOrDefaultAsync(u => u.Id == alumnoDTO.Id);
+            var alumnos = await _context.Alumno.Include(i => i.Equipo).Include("Curso").FirstOrDefaultAsync(u => u.Id == alumnoDTO.Id);
 
             if (alumnos == null)
             {

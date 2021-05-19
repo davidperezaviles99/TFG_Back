@@ -7,8 +7,9 @@ namespace TFG_Back.Models
 {
     public class Alumno: User
     {
+       public Curso Curso { get; set; }
 
-        public Curso Curso { get; set; }
-
+       
+        public ICollection<Equipo> Equipo { get; set; }
     }
 }

@@ -47,7 +47,7 @@ namespace TFG_Back.Controllers
 
         // PUT: api/Diarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Date,Horas,Descripcion,LinkExterno,EvaluacionT,EvaluacionP")] Diario diario)
         {
             var diarios = await _context.Diario.Include("Alumno").Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == diario.Id);

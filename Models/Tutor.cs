@@ -13,5 +13,8 @@ namespace TFG_Back.Models
         [Required]
         public string NombreEmpresa { get; set; }
 
+
+        public ICollection<Equipo> Equipo { get; set; }
+
     }
 }

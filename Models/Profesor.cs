@@ -8,6 +8,8 @@ namespace TFG_Back.Models
 {
     public class Profesor: User
     {
-        
+
+        public ICollection<Equipo> Equipo { get; set; }
+
     }
 }
