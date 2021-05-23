@@ -4,10 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TFG_Back.Data;
+using TFG_Back.DTOs;
 using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
@@ -17,25 +19,29 @@ namespace TFG_Back.Controllers
     public class DiariosController : Controller
     {
         private readonly TFG_BackContext _context;
+        private readonly IMapper _mapper;
 
-        public DiariosController(TFG_BackContext context)
+        public DiariosController(TFG_BackContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Diarios
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Diario>>> GetDiarios()
+        public async Task<ActionResult<IEnumerable<Diario>>> GetDiario()
         {
-            return await _context.Diario.Include("Alumno").Include("Asignaturas").ToListAsync();
+            var diario = await _context.Diario.Include("Equipo").Include("Asignaturas").ToListAsync();
+
+            return diario;
 
         }
 
         // GET: api/Diarios/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Diario>> GetDiarios(long id)
+        public async Task<ActionResult<Diario>> GetDiario(long id)
         {
-            var diario = await _context.Diario.Include("Alumno").Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == id);
+            var diario = await _context.Diario.Include("Equipo").Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == id);
 
             if (diario == null)
             {
@@ -48,25 +54,26 @@ namespace TFG_Back.Controllers
         // PUT: api/Diarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Date,Horas,Descripcion,LinkExterno,EvaluacionT,EvaluacionP")] Diario diario)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Date,Horas,Descripcion,LinkExterno,EvaluacionT,EvaluacionP")] DiarioDTO diarioDTO)
         {
-            var diarios = await _context.Diario.Include("Alumno").Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == diario.Id);
+            var DiarioDTO = await _context.Diario.Include("Equipo").Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == diarioDTO.Id);
 
-            if (id != diario.Id)
+            if (DiarioDTO == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(diario).State = EntityState.Modified;
+
+            _context.Entry(DiarioDTO).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok();
+                return CreatedAtAction(nameof(GetDiario), new { id = diarioDTO.Id }, diarioDTO);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DiarioExists(id))
+                if (!DiarioExists(diarioDTO.Id))
                 {
                     return NotFound();
                 }
@@ -80,9 +87,11 @@ namespace TFG_Back.Controllers
         // POST: api/Diarios/create
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("create")]
-        public async Task<HttpResponseMessage> Create([Bind("Id,Date,Horas,Descripcion,LinkExterno,EvaluacionT,EvaluacionP")] Diario diario)
+        public async Task<HttpResponseMessage> Create([Bind("Id,Date,Horas,Descripcion,LinkExterno,EvaluacionT,EvaluacionP")] DiarioDTO diarioDTO)
         {
-            var diarios = await _context.Diario.Include("Alumno").Include("Asignaturas").FirstOrDefaultAsync(u => u.Id == diario.Id);
+            var diario = _mapper.Map<Diario>(diarioDTO);
+
+            _context.Entry(diario).State = EntityState.Unchanged;
 
             _context.Diario.Add(diario);
             await _context.SaveChangesAsync();

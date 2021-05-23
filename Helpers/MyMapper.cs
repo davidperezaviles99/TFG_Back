@@ -29,9 +29,25 @@ namespace TFG_Back.Helpers
 
             CreateMap<ProfesorDTO, Profesor>();
 
-            CreateMap<Asignaturas, AsignaturasDTO>();
+            CreateMap<Asignatura, AsignaturaDTO>();
 
-            CreateMap<AsignaturasDTO, Asignaturas>();
+            CreateMap<AsignaturaDTO, Asignatura>();
+
+            CreateMap<Curso, CursoDTO>();
+
+            CreateMap<CursoDTO, Curso>();
+
+            CreateMap<Equipo, EquipoDTO>();
+
+            CreateMap<EquipoDTO, Equipo>();
+
+            CreateMap<Diario, DiarioDTO>();
+
+            CreateMap<DiarioDTO, Diario>();
+
+            CreateMap<Evaluacion, EvaluacionDTO>();
+
+            CreateMap<EvaluacionDTO, Evaluacion>();
 
         }
         

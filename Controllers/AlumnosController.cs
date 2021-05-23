@@ -28,7 +28,7 @@ namespace TFG_Back.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Alumno>>> GetAlumno()
         {
-            return await _context.Alumno.Include(i => i.Equipo).Include("Curso").ToListAsync();
+            return await _context.Alumno.Include("Curso").ToListAsync();
 
         }
 
@@ -36,7 +36,7 @@ namespace TFG_Back.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Alumno>> GetAlumno(long id)
         {
-            var alumno = await _context.Alumno.Include(i => i.Equipo).Include("Curso").FirstOrDefaultAsync(u => u.Id == id);
+            var alumno = await _context.Alumno.Include("Curso").FirstOrDefaultAsync(u => u.Id == id);
 
             if (alumno == null)
             {
@@ -51,19 +51,19 @@ namespace TFG_Back.Controllers
         [HttpPut]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Role")] AlumnoDTO alumnoDTO)
         {
-            var alumnos = await _context.Alumno.Include(i => i.Equipo).Include("Curso").FirstOrDefaultAsync(u => u.Id == alumnoDTO.Id);
+            var AlumnoDTO = await _context.Alumno.Include("Curso").FirstOrDefaultAsync(u => u.Id == alumnoDTO.Id);
 
-            if (alumnos == null)
+            if (AlumnoDTO == null)
             {
                 return NotFound();
             }
 
-            _context.Entry(alumnos).CurrentValues.SetValues(alumnoDTO);
+            _context.Entry(AlumnoDTO).CurrentValues.SetValues(alumnoDTO);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok();
+                return CreatedAtAction(nameof(GetAlumno), new { id = alumnoDTO.Id }, alumnoDTO);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -87,6 +87,7 @@ namespace TFG_Back.Controllers
             var hashed = BCrypt.Net.BCrypt.HashPassword(alumno.Password, 10);
             alumno.Password = hashed;
 
+            _context.Entry(alumno).State = EntityState.Unchanged;
             _context.Alumno.Add(alumno);
             await _context.SaveChangesAsync();
 

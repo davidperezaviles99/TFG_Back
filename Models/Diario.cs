@@ -16,7 +16,7 @@ namespace TFG_Back.Models
         [Required]
         public DateTime Date { get; set; }
 
-        [StringLength(3, MinimumLength = 1)]
+        [StringLength(2, MinimumLength = 1)]
         [Required]
         public long Horas { get; set; }
 
@@ -25,16 +25,10 @@ namespace TFG_Back.Models
         public string Descripcion { get; set; }
 
         [StringLength(200, MinimumLength = 2)]
-        public string LinkExterno { get; set; }
-
-        [StringLength(2, MinimumLength = 1)]
-        public string EvaluacionT { get; set; }
-
-        [StringLength(2, MinimumLength = 1)]
-        public string EvaluacionP { get; set; }
+        public string Link { get; set; }
 
         public Equipo Equipo { get; set; }
 
-        public Asignaturas Asignaturas { get; set; }
+        public Asignatura Asignaturas { get; set; }
     }
 }

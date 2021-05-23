@@ -51,19 +51,19 @@ namespace TFG_Back.Controllers
         [HttpPut]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Lastname,Email,Role")] TutorDTO tutorDTO)
         {
-            var tutors = await _context.Tutor.FirstOrDefaultAsync(u => u.Id == tutorDTO.Id);
+            var TutorDTO = await _context.Tutor.FirstOrDefaultAsync(u => u.Id == tutorDTO.Id);
 
-            if (tutors == null)
+            if (TutorDTO == null)
             {
                 return NotFound();
             }
 
-            _context.Entry(tutors).CurrentValues.SetValues(tutorDTO);
+            _context.Entry(TutorDTO).CurrentValues.SetValues(tutorDTO);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok();
+                return CreatedAtAction(nameof(GetTutor), new { id = tutorDTO.Id }, tutorDTO);
             }
             catch (DbUpdateConcurrencyException)
             {

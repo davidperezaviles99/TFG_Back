@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TFG_Back.Data;
 using TFG_Back.Models;
+using AutoMapper;
+using TFG_Back.DTOs;
 
 namespace TFG_Back.Controllers
 {
@@ -17,56 +19,62 @@ namespace TFG_Back.Controllers
     public class CursosController : Controller
     {
         private readonly TFG_BackContext _context;
+        private readonly IMapper _mapper;
 
-        public CursosController(TFG_BackContext context)
+        public CursosController(TFG_BackContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: Cursos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Curso>>> GetCursos()
+        public async Task<ActionResult<IEnumerable<Curso>>> GetCurso()
         {
-            return await _context.Curso.Include("Asignaturas").Include("Alumno").ToListAsync();
+            var curso = await _context.Curso.Include("Asignatura").ToListAsync();
 
+            return curso;
+            
         }
 
         // GET: api/Cursos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Curso>> GetCurso(long id)
         {
-            var cursos = await _context.Curso.Include("Asignaturas").Include("Alumno").FirstOrDefaultAsync(u => u.Id == id);
+            var curso = await _context.Curso.Include("Asignatura").FirstOrDefaultAsync(u => u.Id == id);
 
-            if (cursos == null)
+            if (curso == null)
             {
                 return NotFound();
             }
 
-            return cursos;
+            return curso;
         }
 
         // PUT: api/Cursos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Numero,Name")] Curso curso)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Numero,Name")] CursoDTO cursoDTO)
         {
-            var cursos = await _context.Curso.Include("Asignaturas").Include("Alumno").FirstOrDefaultAsync(u => u.Id == curso.Id);
 
-            if (id != curso.Id)
+            var CursoDTO = await _context.Curso.FirstOrDefaultAsync(u => u.Id == cursoDTO.Id);
+
+            if (CursoDTO == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(curso).State = EntityState.Modified;
+            _context.Entry(CursoDTO).CurrentValues.SetValues(cursoDTO);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok();
+                return CreatedAtAction(nameof(GetCurso), new { id = cursoDTO.Id }, cursoDTO);
+
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CursoExists(id))
+                if (!CursoExists(cursoDTO.Id))
                 {
                     return NotFound();
                 }
@@ -80,9 +88,11 @@ namespace TFG_Back.Controllers
         // POST: api/Cursos/create
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("create")]
-        public async Task<HttpResponseMessage> Create([Bind("Id,Numero,Name")] Curso curso)
+        public async Task<HttpResponseMessage> Create([Bind("Id,Numero,Name")] CursoDTO cursoDTO)
         {
-            var cursos = await _context.Curso.Include("Asignaturas").Include("Alumno").FirstOrDefaultAsync(u => u.Id == curso.Id);
+            var curso = _mapper.Map<Curso>(cursoDTO);
+
+            _context.Entry(curso).State = EntityState.Unchanged;
 
             _context.Curso.Add(curso);
             await _context.SaveChangesAsync();

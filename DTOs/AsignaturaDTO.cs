@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TFG_Back.Models
+namespace TFG_Back.DTOs
 {
-    public class Asignaturas
+    public class AsignaturaDTO
     {
-        [Key]
         public long Id { get; set; }
 
         public long Codigo { get; set; }
 
-        [StringLength(30, MinimumLength = 2)]
         public string Name { get; set; }
 
-        public Profesor Profesor { get; set; }
-
+        public ProfesorDTO Profesor { get; set; }
     }
 }

@@ -29,49 +29,50 @@ namespace TFG_Back.Controllers
 
         // GET: api/Asignaturas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Asignaturas>>> GetAsignaturas()
+        public async Task<ActionResult<IEnumerable<Asignatura>>> GetAsignatura()
         {
-            return await _context.Asignaturas.Include("Profesor").ToListAsync();
+            var asignatura = await _context.Asignatura.Include("Profesor").ToListAsync();
 
+            return asignatura;
         }
 
         // GET: api/Asignaturas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Asignaturas>> GetAsignatura(long id)
+        public async Task<ActionResult<Asignatura>> GetAsignatura(long id)
         {
-            var asignaturas = await _context.Asignaturas.Include("Profesor").FirstOrDefaultAsync(u => u.Id == id);
+            var asignatura = await _context.Asignatura.Include("Profesor").FirstOrDefaultAsync(u => u.Id == id);
 
-            if (asignaturas == null)
+            if (asignatura == null)
             {
                 return NotFound();
             }
 
-            return asignaturas;
+            return asignatura;
         }
            
         // PUT: api/Asignaturas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Codigo,Curso,Asignatura")] AsignaturasDTO asignaturasDTO)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Codigo,Nombre")] AsignaturaDTO asignaturaDTO)
         {
             
-            var asignatura = await _context.Asignaturas.FirstOrDefaultAsync(u => u.Id == asignaturasDTO.Id);
+            var AsignaturaDTO = await _context.Asignatura.Include("Profesor").FirstOrDefaultAsync(u => u.Id == asignaturaDTO.Id);
 
-            if (asignatura == null)
+            if (AsignaturaDTO == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(asignatura).CurrentValues.SetValues(asignaturasDTO);
+            _context.Entry(AsignaturaDTO).CurrentValues.SetValues(asignaturaDTO);
 
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok();
+                return CreatedAtAction(nameof(GetAsignatura), new { id = asignaturaDTO.Id }, asignaturaDTO);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!AsignaturasExists(asignaturasDTO.Id))
+                if (!AsignaturaExists(asignaturaDTO.Id))
                 {
                     return NotFound();
                 }
@@ -85,14 +86,14 @@ namespace TFG_Back.Controllers
         // POST: api/Asignaturas/create
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("create")]
-        public async Task<HttpResponseMessage> Create([Bind("Id,Codigo,Curso,Asignatura")] AsignaturasDTO asignaturasDTO)
+        public async Task<HttpResponseMessage> Create([Bind("Id,Codigo,Nombre")] AsignaturaDTO asignaturaDTO)
         {
 
-            var asignaturas = _mapper.Map<Asignaturas>(asignaturasDTO);
+            var asignatura = _mapper.Map<Asignatura>(asignaturaDTO);
 
-            _context.Entry(asignaturas).State = EntityState.Unchanged;
+            _context.Entry(asignatura).State = EntityState.Unchanged;
 
-            _context.Asignaturas.Add(asignaturas);
+            _context.Asignatura.Add(asignatura);
             await _context.SaveChangesAsync();
 
             return new HttpResponseMessage(HttpStatusCode.Created);
@@ -100,23 +101,23 @@ namespace TFG_Back.Controllers
 
         // DELETE: api/Asignaturas/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsignaturas(long id)
+        public async Task<IActionResult> DeleteAsignatura(long id)
         {
-            var asignaturas = await _context.Asignaturas.FindAsync(id);
-            if (asignaturas == null)
+            var asignatura = await _context.Asignatura.FindAsync(id);
+            if (asignatura == null)
             {
                 return NotFound();
             }
 
-            _context.Asignaturas.Remove(asignaturas);
+            _context.Asignatura.Remove(asignatura);
             await _context.SaveChangesAsync();
 
             return Ok();
         }
 
-        private bool AsignaturasExists(long id)
+        private bool AsignaturaExists(long id)
         {
-            return _context.Asignaturas.Any(e => e.Id == id);
+            return _context.Asignatura.Any(e => e.Id == id);
         }
     }
 }

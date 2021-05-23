@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TFG_Back.Data;
@@ -9,9 +10,10 @@ using TFG_Back.Data;
 namespace TFG_Back.Migrations
 {
     [DbContext(typeof(TFG_BackContext))]
-    partial class TFG_BackContextModelSnapshot : ModelSnapshot
+    [Migration("20210520140532_Mig3")]
+    partial class Mig3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,7 +21,7 @@ namespace TFG_Back.Migrations
                 .HasAnnotation("ProductVersion", "5.0.6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("TFG_Back.Models.Asignatura", b =>
+            modelBuilder.Entity("TFG_Back.Models.Asignaturas", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,7 +42,7 @@ namespace TFG_Back.Migrations
 
                     b.HasIndex("ProfesorId");
 
-                    b.ToTable("Asignatura");
+                    b.ToTable("Asignaturas");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Curso", b =>
@@ -50,7 +52,7 @@ namespace TFG_Back.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<long?>("AsignaturaId")
+                    b.Property<long?>("AsignaturasId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
@@ -59,11 +61,12 @@ namespace TFG_Back.Migrations
                         .HasColumnType("character varying(30)");
 
                     b.Property<long>("Numero")
+                        .HasMaxLength(30)
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AsignaturaId");
+                    b.HasIndex("AsignaturasId");
 
                     b.ToTable("Curso");
                 });
@@ -89,11 +92,19 @@ namespace TFG_Back.Migrations
                     b.Property<long?>("EquipoId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("Horas")
+                    b.Property<string>("EvaluacionP")
                         .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
+                    b.Property<string>("EvaluacionT")
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
+                    b.Property<long>("Horas")
+                        .HasMaxLength(3)
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Link")
+                    b.Property<string>("LinkExterno")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
@@ -131,32 +142,6 @@ namespace TFG_Back.Migrations
                     b.HasIndex("TutorId");
 
                     b.ToTable("Equipo");
-                });
-
-            modelBuilder.Entity("TFG_Back.Models.Evaluacion", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<long?>("EquipoId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("EvaluacionP")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EvaluacionT")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EquipoId");
-
-                    b.ToTable("Evaluacion");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Mensaje", b =>
@@ -251,7 +236,7 @@ namespace TFG_Back.Migrations
                     b.HasDiscriminator().HasValue("Tutor");
                 });
 
-            modelBuilder.Entity("TFG_Back.Models.Asignatura", b =>
+            modelBuilder.Entity("TFG_Back.Models.Asignaturas", b =>
                 {
                     b.HasOne("TFG_Back.Models.Profesor", "Profesor")
                         .WithMany()
@@ -262,16 +247,16 @@ namespace TFG_Back.Migrations
 
             modelBuilder.Entity("TFG_Back.Models.Curso", b =>
                 {
-                    b.HasOne("TFG_Back.Models.Asignatura", "Asignatura")
+                    b.HasOne("TFG_Back.Models.Asignaturas", "Asignaturas")
                         .WithMany()
-                        .HasForeignKey("AsignaturaId");
+                        .HasForeignKey("AsignaturasId");
 
-                    b.Navigation("Asignatura");
+                    b.Navigation("Asignaturas");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Diario", b =>
                 {
-                    b.HasOne("TFG_Back.Models.Asignatura", "Asignaturas")
+                    b.HasOne("TFG_Back.Models.Asignaturas", "Asignaturas")
                         .WithMany()
                         .HasForeignKey("AsignaturasId");
 
@@ -303,15 +288,6 @@ namespace TFG_Back.Migrations
                     b.Navigation("Profesor");
 
                     b.Navigation("Tutor");
-                });
-
-            modelBuilder.Entity("TFG_Back.Models.Evaluacion", b =>
-                {
-                    b.HasOne("TFG_Back.Models.Equipo", "Equipo")
-                        .WithMany()
-                        .HasForeignKey("EquipoId");
-
-                    b.Navigation("Equipo");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Mensaje", b =>

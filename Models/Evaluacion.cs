@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 
 namespace TFG_Back.Models
 {
-    public class Curso
+    public class Evaluacion
     {
+
         [Key]
         public long Id { get; set; }
 
+        [DataType(DataType.Date)]
         [Required]
-        public long Numero { get; set; }
+        public DateTime Date { get; set; }
 
-        [StringLength(30, MinimumLength = 1)]
-        [Required]
-        public string Name { get; set; }
+        public string EvaluacionT { get; set; }
 
-        public Asignatura Asignatura { get; set; }
+        public string EvaluacionP { get; set; }
+
+        public Equipo Equipo { get; set; }
 
     }
-
 }
