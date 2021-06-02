@@ -27,8 +27,15 @@ namespace TFG_Back.Models
         [StringLength(200, MinimumLength = 2)]
         public string Link { get; set; }
 
+        public string EvaluacionT { get; set; }
+
+        public string EvaluacionP { get; set; }
+
+        public User User { get; set; }
+
         public Equipo Equipo { get; set; }
 
-        public Asignatura Asignaturas { get; set; }
+        public Asignatura Asignatura { get; set; }
+
     }
 }

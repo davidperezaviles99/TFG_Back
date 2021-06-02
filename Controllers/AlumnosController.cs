@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,12 @@ namespace TFG_Back.Controllers
     public class AlumnosController : Controller
     {
         private readonly TFG_BackContext _context;
+        private readonly IMapper _mapper;
 
-        public AlumnosController(TFG_BackContext context)
+        public AlumnosController(TFG_BackContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Alumnos
@@ -81,7 +84,7 @@ namespace TFG_Back.Controllers
         // POST: api/Alumnos/create
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("create")]
-        public async Task<HttpResponseMessage> Create([Bind("Id,Name,Lastname,Email,Password,Role")] Alumno alumno)
+        public async Task<ActionResult<AlumnoDTO>> Create([Bind("Id,Name,Lastname,Email,Password,Role")] Alumno alumno)
         {
 
             var hashed = BCrypt.Net.BCrypt.HashPassword(alumno.Password, 10);
@@ -91,7 +94,7 @@ namespace TFG_Back.Controllers
             _context.Alumno.Add(alumno);
             await _context.SaveChangesAsync();
 
-            return new HttpResponseMessage(HttpStatusCode.Created);
+            return CreatedAtAction(nameof(GetAlumno), new { id = alumno.Id }, _mapper.Map<AlumnoDTO>(alumno));
         }
 
         // DELETE: api/Alumnos/5

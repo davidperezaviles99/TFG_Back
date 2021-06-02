@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TFG_Back.Data;
@@ -9,9 +10,10 @@ using TFG_Back.Data;
 namespace TFG_Back.Migrations
 {
     [DbContext(typeof(TFG_BackContext))]
-    partial class TFG_BackContextModelSnapshot : ModelSnapshot
+    [Migration("20210528115214_Mig8")]
+    partial class Mig8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,12 +90,6 @@ namespace TFG_Back.Migrations
 
                     b.Property<long?>("EquipoId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("EvaluacionP")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EvaluacionT")
-                        .HasColumnType("text");
 
                     b.Property<long>("Horas")
                         .HasMaxLength(2)
@@ -177,10 +173,6 @@ namespace TFG_Back.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Asunto")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Comentario")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -188,10 +180,6 @@ namespace TFG_Back.Migrations
 
                     b.Property<long?>("EquipoId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<long?>("UserId")
                         .HasColumnType("bigint");

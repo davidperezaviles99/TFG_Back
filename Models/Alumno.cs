@@ -9,6 +9,6 @@ namespace TFG_Back.Models
     {
        public Curso Curso { get; set; }
 
-        public ICollection<Equipo> Equipo { get; set; }
+       public ICollection<Equipo> Equipo { get; set; }
     }
 }

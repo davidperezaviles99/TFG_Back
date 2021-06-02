@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TFG_Back.Data;
@@ -9,9 +10,10 @@ using TFG_Back.Data;
 namespace TFG_Back.Migrations
 {
     [DbContext(typeof(TFG_BackContext))]
-    partial class TFG_BackContextModelSnapshot : ModelSnapshot
+    [Migration("20210525144343_Mig6")]
+    partial class Mig6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,12 +91,6 @@ namespace TFG_Back.Migrations
                     b.Property<long?>("EquipoId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("EvaluacionP")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EvaluacionT")
-                        .HasColumnType("text");
-
                     b.Property<long>("Horas")
                         .HasMaxLength(2)
                         .HasColumnType("bigint");
@@ -103,16 +99,11 @@ namespace TFG_Back.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AsignaturaId");
 
                     b.HasIndex("EquipoId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Diario");
                 });
@@ -177,10 +168,6 @@ namespace TFG_Back.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Asunto")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Comentario")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -189,18 +176,9 @@ namespace TFG_Back.Migrations
                     b.Property<long?>("EquipoId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EquipoId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Mensaje");
                 });
@@ -303,15 +281,9 @@ namespace TFG_Back.Migrations
                         .WithMany()
                         .HasForeignKey("EquipoId");
 
-                    b.HasOne("TFG_Back.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Asignatura");
 
                     b.Navigation("Equipo");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Equipo", b =>
@@ -350,13 +322,7 @@ namespace TFG_Back.Migrations
                         .WithMany()
                         .HasForeignKey("EquipoId");
 
-                    b.HasOne("TFG_Back.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Equipo");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Alumno", b =>

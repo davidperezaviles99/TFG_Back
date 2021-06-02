@@ -11,8 +11,15 @@ namespace TFG_Back.Models
         [Key]
         public long Id { get; set; }
 
-        [Required]
         public Equipo Equipo { get; set; }
+
+        public User User { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Asunto { get; set; }
 
         [StringLength(150, MinimumLength = 2)]
         [Required]

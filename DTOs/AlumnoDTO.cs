@@ -6,7 +6,7 @@ using TFG_Back.Models;
 
 namespace TFG_Back.DTOs
 {
-    public class AlumnoDTO: UsersDTO
+    public class AlumnoDTO: UserDTO
     {
         public ICollection<EquipoDTO> Equipo { get; set; }
 

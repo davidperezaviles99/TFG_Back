@@ -31,8 +31,13 @@ namespace TFG_Back.Data
         public DbSet<TFG_Back.Models.Curso> Curso { get; set; }
         public DbSet<TFG_Back.Models.Diario> Diario { get; set; }
 
-        public DbSet<TFG_Back.Models.Asignatura> Asignatura { get; set; } 
-        
+        public DbSet<TFG_Back.Models.Asignatura> Asignatura { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
+
     }
 
    

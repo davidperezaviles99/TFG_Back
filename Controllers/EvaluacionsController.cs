@@ -51,12 +51,6 @@ namespace TFG_Back.Controllers
             return evaluacion;
         }
 
-        // GET: Evaluacions/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // PUT: api/Evaluacions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
@@ -108,7 +102,7 @@ namespace TFG_Back.Controllers
 
         // DELETE: api/Evaluacions/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsignatura(long id)
+        public async Task<IActionResult> DeleteEvaluacion(long id)
         {
             var evaluacion = await _context.Evaluacion.FindAsync(id);
             if (evaluacion == null)

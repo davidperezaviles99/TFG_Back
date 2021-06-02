@@ -54,15 +54,18 @@ namespace TFG_Back.Controllers
         // PUT: api/Cursos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Numero,Name")] CursoDTO cursoDTO)
+        public async Task<IActionResult> Edit(CursoDTO cursoDTO)
         {
+            var CursoDTO = await _context.Curso.Include("Asignatura").FirstOrDefaultAsync(u => u.Id == cursoDTO.Id);
 
-            var CursoDTO = await _context.Curso.FirstOrDefaultAsync(u => u.Id == cursoDTO.Id);
+            var asignatura = await _context.Asignatura.FindAsync(cursoDTO.Asignatura.Id);
 
             if (CursoDTO == null)
             {
                 return NotFound();
             }
+
+            CursoDTO.Asignatura = asignatura;
 
             _context.Entry(CursoDTO).CurrentValues.SetValues(cursoDTO);
 

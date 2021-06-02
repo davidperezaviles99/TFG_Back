@@ -6,7 +6,7 @@ using TFG_Back.Models;
 
 namespace TFG_Back.DTOs
 {
-    public class UsersDTO
+    public class UserDTO
     {
         public long Id { get; set; }
 

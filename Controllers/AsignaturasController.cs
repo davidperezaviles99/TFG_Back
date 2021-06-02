@@ -38,30 +38,39 @@ namespace TFG_Back.Controllers
 
         // GET: api/Asignaturas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Asignatura>> GetAsignatura(long id)
+        public async Task<ActionResult<AsignaturaDTO>> GetAsignatura(long id)
         {
-            var asignatura = await _context.Asignatura.Include("Profesor").FirstOrDefaultAsync(u => u.Id == id);
+            var asignatura = await _context.Asignatura.Include("Profesor").Where(o => o.Id == id).FirstOrDefaultAsync();
 
             if (asignatura == null)
             {
                 return NotFound();
             }
 
-            return asignatura;
+            var asignaturaDTO = _mapper.Map<AsignaturaDTO>(asignatura);
+
+            return asignaturaDTO;
         }
            
         // PUT: api/Asignaturas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Codigo,Nombre")] AsignaturaDTO asignaturaDTO)
+        public async Task<IActionResult> Edit(AsignaturaDTO asignaturaDTO)
         {
-            
-            var AsignaturaDTO = await _context.Asignatura.Include("Profesor").FirstOrDefaultAsync(u => u.Id == asignaturaDTO.Id);
+            var AsignaturaDTO = await _context.Asignatura.Include("Profesor").FirstOrDefaultAsync(o => o.Id == asignaturaDTO.Id);
+
+            var profesor = await _context.Profesor.FindAsync(asignaturaDTO.Profesor.Id);
 
             if (AsignaturaDTO == null)
             {
                 return NotFound();
             }
+
+            AsignaturaDTO.Profesor = profesor;
+            //if (@asignatura.Profesor.Id != asignaturaDTO.Profesor.Id)
+            //{
+            //    @asignatura.Profesor = asignaturaDTO.Profesor.Id;
+            //}
 
             _context.Entry(AsignaturaDTO).CurrentValues.SetValues(asignaturaDTO);
 

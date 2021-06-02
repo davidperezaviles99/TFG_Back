@@ -12,6 +12,7 @@ using System.Net;
 using TFG_Back.DTOs;
 using TFG_Back.Helpers;
 using AutoMapper;
+using AutoMapper.Configuration;
 
 namespace TFG_Back.Controllers
 {
@@ -30,16 +31,16 @@ namespace TFG_Back.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsersDTO>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
         {
             var users = await _context.User.ToListAsync();
-            var usersDTO = _mapper.Map<List<UsersDTO>>(users);
-            return usersDTO;
+            var userDTO = _mapper.Map<List<UserDTO>>(users);
+            return userDTO;
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsersDTO>> GetUser(long id)
+        public async Task<ActionResult<UserDTO>> GetUser(long id)
         {
             var user = await _context.User.FindAsync(id);
 
@@ -48,32 +49,33 @@ namespace TFG_Back.Controllers
                 return NotFound();
             }
 
-            var usersDTO = _mapper.Map<UsersDTO>(user);
+            var userDTO = _mapper.Map<UserDTO>(user);
 
-            return usersDTO;
+            return userDTO;
         }
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
-        public async Task<IActionResult> PutUser(long id, User user)
+        public async Task<IActionResult> PutUser(long id, UserDTO userDTO)
         {
-            if (id != user.Id)
+            var UserDTO = await _context.User.FirstOrDefaultAsync(u => u.Id == userDTO.Id);
+
+            if (UserDTO == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            var hashed = BCrypt.Net.BCrypt.HashPassword(user.Password, 10);
-            user.Password = hashed;
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(UserDTO).CurrentValues.SetValues(userDTO);
 
             try
             {
                 await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetUser), new { id = userDTO.Id }, userDTO);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserExists(userDTO.Id))
                 {
                     return NotFound();
                 }
@@ -82,9 +84,8 @@ namespace TFG_Back.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
         }
+
 
         // POST: api/Users/create
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -103,7 +104,7 @@ namespace TFG_Back.Controllers
 
         // POST: api/Users/login
         [HttpPost("login")]
-        public async Task<ActionResult<UsersDTO>> LoginUser(LoginDTO loginDTO)
+        public async Task<ActionResult<UserDTO>> LoginUser(LoginDTO loginDTO)
         {
             var user = await _context.User.Where(u => u.Email == loginDTO.Email).FirstOrDefaultAsync();
 
@@ -114,8 +115,8 @@ namespace TFG_Back.Controllers
 
             if (BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
             {
-                var usersDTO = _mapper.Map<UsersDTO>(user);
-                return usersDTO;
+                var userDTO = _mapper.Map<UserDTO>(user);
+                return userDTO;
             }
             else
             {

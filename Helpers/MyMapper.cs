@@ -13,9 +13,9 @@ namespace TFG_Back.Helpers
     {
         public MyMapper()
         {
-            CreateMap<User, UsersDTO>();
+            CreateMap<User, UserDTO>();
 
-            CreateMap<UsersDTO, User>();
+            CreateMap<UserDTO, User>();
 
             CreateMap<Alumno, AlumnoDTO>();
 
@@ -48,6 +48,10 @@ namespace TFG_Back.Helpers
             CreateMap<Evaluacion, EvaluacionDTO>();
 
             CreateMap<EvaluacionDTO, Evaluacion>();
+
+            CreateMap<Mensaje, MensajeDTO>();
+
+            CreateMap<MensajeDTO, Mensaje>();
 
         }
         

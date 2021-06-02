@@ -11,6 +11,8 @@ namespace TFG_Back.DTOs
 
         public long AlumnoId { get; set; }
 
+        public AlumnoDTO Alumno { get; set; }
+
         public TutorDTO Tutor { get; set; }
 
         public ProfesorDTO Profesor { get; set; }

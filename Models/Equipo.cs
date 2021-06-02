@@ -11,6 +11,8 @@ namespace TFG_Back.Models
         [Key]
         public long Id { get; set; }
 
+        public long AlumnoId { get; set; }
+
         public Alumno Alumno { get; set; }
 
         public Tutor Tutor { get; set; }

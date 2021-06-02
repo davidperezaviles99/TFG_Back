@@ -18,8 +18,15 @@ namespace TFG_Back.DTOs
 
         public string Link { get; set; }
 
+        public string EvaluacionT { get; set; }
+
+        public string EvaluacionP { get; set; }
+
+        public long UserId { get; set; }
+        public  UserDTO User { get; set; }
+
         public EquipoDTO Equipo { get; set; }
 
-        public AsignaturaDTO Asignaturas { get; set; }
+        public AsignaturaDTO Asignatura { get; set; }
     }
 }
