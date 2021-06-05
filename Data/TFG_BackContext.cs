@@ -26,7 +26,9 @@ namespace TFG_Back.Data
 
         public DbSet<TFG_Back.Models.Evaluacion> Evaluacion { get; set; }
 
-        public DbSet<TFG_Back.Models.Mensaje> Mensaje { get; set; }
+        public DbSet<TFG_Back.Models.Message> Message { get; set; }
+
+        public DbSet<TFG_Back.Models.EquipoMensaje> EquipoMensaje { get; set; }
 
         public DbSet<TFG_Back.Models.Curso> Curso { get; set; }
         public DbSet<TFG_Back.Models.Diario> Diario { get; set; }

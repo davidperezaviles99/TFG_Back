@@ -37,7 +37,7 @@ namespace TFG_Back.Controllers
 
         // GET: api/Equipos/5
         [HttpPost("consultaequipo")]
-        public async Task<ActionResult<IEnumerable<EquipoDTO>>> GetConsulta(ConsultaequipoDTO consultaequipoDTO)
+        public async Task<ActionResult<IEnumerable<Equipo>>> GetConsulta(ConsultaequipoDTO consultaequipoDTO)
         {
             //var equipos = await _context.Equipo.Include("Alumno").Include("Profesor").Include("Tutor").FirstOrDefaultAsync(o => o.Profesor.Id == id || o.Tutor.Id == id);
 
@@ -50,31 +50,41 @@ namespace TFG_Back.Controllers
             //    return NotFound();
             //}
 
-            List<Equipo> equipos = new();
+            List<Equipo> equipos = _context.Equipo.Include(x => x.Profesor).Include(x => x.Alumno).Include(x => x.Tutor).Where(d => d.Profesor.Id == consultaequipoDTO.Id || d.Tutor.Id == consultaequipoDTO.Id).ToList();
 
-            if (consultaequipoDTO.Role == "Profesor")
-            {
-                var equipo = await _context.Equipo.FirstOrDefaultAsync(e => e.Profesor.Id == consultaequipoDTO.Id);
-                if(equipo == null)
-                {
-                    return _mapper.Map<List<EquipoDTO>>(equipos);
-                }
-                var equipodb = await _context.Equipo.Include("Alumno").Include("Tutor").Include("Profesor").ToListAsync();
-                equipos = equipodb.FindAll(e => e.Profesor.Id == consultaequipoDTO.Id);
-            }
+            //switch (consultaequipoDTO.Role)
+            //{
+            //    case "Profesor":
+            //        Equipo equipo = await (from d in _context.Equipo.Include(x => x.Alumno).Include(x => x.Profesor).Include(x => x.Tutor) where d.Profesor.Id == consultaequipoDTO.Id select d).FirstOrDefaultAsync();
+            //        return equipo;
+            //    case "Tutor":
+            //        Equipo equipo = await (from d in _context.Equipo.Include(x => x.Alumno).Include(x => x.Profesor).Include(x => x.Tutor) where d.Tutor.Id == consultaequipoDTO.Id select d).FirstOrDefaultAsync();
+            //        return equipo;
+            //}
 
-            if (consultaequipoDTO.Role == "Tutor")
-            {
-                var equipo = await _context.Equipo.FirstOrDefaultAsync(e => e.Tutor.Id == consultaequipoDTO.Id);
-                if (equipo == null)
-                {
-                    return _mapper.Map<List<EquipoDTO>>(equipos);
-                }
-                var equipodb = await _context.Equipo.Include("Alumno").Include("Profesor").Include("Tutor").ToListAsync();
-                equipos = equipodb.FindAll(e => e.Tutor.Id == consultaequipoDTO.Id);
-            }
+            //if (consultaequipoDTO.Role == "Profesor")
+            //{
+            //    var equipo = await _context.Equipo.FirstOrDefaultAsync(e => e.Profesor.Id == consultaequipoDTO.Id);
+            //    if (equipo == null)
+            //    {
+            //        return _mapper.Map<List<Equipo>>(equipos);
+            //    }
+            //    var equipodb = await _context.Equipo.Include("Alumno").Include("Tutor").Include("Profesor").ToListAsync();
+            //    equipos = equipodb.FindAll(e => e.Profesor.Id == consultaequipoDTO.Id);
+            //}
 
-            return _mapper.Map<List<EquipoDTO>>(equipos);
+            //if (consultaequipoDTO.Role == "Tutor")
+            //{
+            //    var equipo = await _context.Equipo.FirstOrDefaultAsync(e => e.Tutor.Id == consultaequipoDTO.Id);
+            //    if (equipo == null)
+            //    {
+            //        return _mapper.Map<List<Equipo>>(equipos);
+            //    }
+            //    var equipodb = await _context.Equipo.Include("Alumno").Include("Profesor").Include("Tutor").ToListAsync();
+            //    equipos = equipodb.FindAll(e => e.Tutor.Id == consultaequipoDTO.Id);
+            //}
+
+            return _mapper.Map<List<Equipo>>(equipos);
         }
 
         // GET: api/Equipos/5
@@ -286,6 +296,57 @@ namespace TFG_Back.Controllers
 
             return CreatedAtAction(nameof(GetEquipo), new { id = equipo.Id }, _mapper.Map<EquipoDTO>(equipo));
         }
+
+        [HttpGet("getEquipoMensajeList/{id}")]
+        public async Task<ActionResult<IEnumerable<EquipoMensajeDTO>>> GetEquipoMensajeList(long id)
+        {
+            var EquipoMensajeDB = await _context.EquipoMensaje.Include("User").Include("Equipo").Include("Message").ToListAsync();
+
+            var EquipoMensaje = EquipoMensajeDB.FindAll(o => o.Equipo.Id == id);
+
+            if (EquipoMensaje == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<List<EquipoMensajeDTO>>(EquipoMensaje);
+        }
+
+        [HttpGet("getEquipoMensaje/{id}")]
+        public async Task<ActionResult<EquipoMensajeDTO>> GetEquipoMensaje(long id)
+        {
+            var EquipoMensaje = await _context.EquipoMensaje.Include("User").Include("Equipo").Include("Message").FirstOrDefaultAsync(o => o.Equipo.Id == id);
+
+            if (EquipoMensaje == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<EquipoMensajeDTO>(EquipoMensaje);
+        }
+
+        [HttpPost("EquipoMensaje")]
+        public async Task<ActionResult<EquipoMensajeDTO>> OperatorDemandMessage(EquipoMensajeDTO equipoMensajeDTO)
+        {
+            var user = await _context.User.FindAsync(equipoMensajeDTO.User.Id);
+            var equipo = _mapper.Map<Equipo>(equipoMensajeDTO.Equipo);
+
+            EquipoMensaje equipoMensaje = new();
+
+            equipoMensaje.User = user;
+            equipoMensaje.Equipo = equipo;
+            equipoMensaje.Message = equipoMensajeDTO.Message;
+            equipoMensaje.Date = equipoMensajeDTO.Date;
+
+            _context.Entry(equipoMensaje).State = EntityState.Unchanged;
+
+            _context.EquipoMensaje.Add(equipoMensaje);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetEquipoMensaje), new { id = equipoMensaje.Id }, _mapper.Map<EquipoMensajeDTO>(equipoMensaje));
+        }
+
+
 
     }
 }

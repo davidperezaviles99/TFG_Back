@@ -10,8 +10,8 @@ using TFG_Back.Data;
 namespace TFG_Back.Migrations
 {
     [DbContext(typeof(TFG_BackContext))]
-    [Migration("20210529155432_Mig10")]
-    partial class Mig10
+    [Migration("20210604163954_Mig1")]
+    partial class Mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,7 +84,6 @@ namespace TFG_Back.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
@@ -126,7 +125,7 @@ namespace TFG_Back.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<long?>("AlumnoId")
+                    b.Property<long>("AlumnoId")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("ProfesorId")
@@ -144,6 +143,36 @@ namespace TFG_Back.Migrations
                     b.HasIndex("TutorId");
 
                     b.ToTable("Equipo");
+                });
+
+            modelBuilder.Entity("TFG_Back.Models.EquipoMensaje", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<long?>("EquipoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("MessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EquipoId");
+
+                    b.HasIndex("MessageId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EquipoMensaje");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Evaluacion", b =>
@@ -172,39 +201,20 @@ namespace TFG_Back.Migrations
                     b.ToTable("Evaluacion");
                 });
 
-            modelBuilder.Entity("TFG_Back.Models.Mensaje", b =>
+            modelBuilder.Entity("TFG_Back.Models.Message", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Asunto")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Comentario")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<long?>("EquipoId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Description")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EquipoId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Mensaje");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.User", b =>
@@ -320,7 +330,9 @@ namespace TFG_Back.Migrations
                 {
                     b.HasOne("TFG_Back.Models.Alumno", "Alumno")
                         .WithMany("Equipo")
-                        .HasForeignKey("AlumnoId");
+                        .HasForeignKey("AlumnoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TFG_Back.Models.Profesor", "Profesor")
                         .WithMany("Equipo")
@@ -337,20 +349,15 @@ namespace TFG_Back.Migrations
                     b.Navigation("Tutor");
                 });
 
-            modelBuilder.Entity("TFG_Back.Models.Evaluacion", b =>
+            modelBuilder.Entity("TFG_Back.Models.EquipoMensaje", b =>
                 {
                     b.HasOne("TFG_Back.Models.Equipo", "Equipo")
                         .WithMany()
                         .HasForeignKey("EquipoId");
 
-                    b.Navigation("Equipo");
-                });
-
-            modelBuilder.Entity("TFG_Back.Models.Mensaje", b =>
-                {
-                    b.HasOne("TFG_Back.Models.Equipo", "Equipo")
+                    b.HasOne("TFG_Back.Models.Message", "Message")
                         .WithMany()
-                        .HasForeignKey("EquipoId");
+                        .HasForeignKey("MessageId");
 
                     b.HasOne("TFG_Back.Models.User", "User")
                         .WithMany()
@@ -358,7 +365,18 @@ namespace TFG_Back.Migrations
 
                     b.Navigation("Equipo");
 
+                    b.Navigation("Message");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TFG_Back.Models.Evaluacion", b =>
+                {
+                    b.HasOne("TFG_Back.Models.Equipo", "Equipo")
+                        .WithMany()
+                        .HasForeignKey("EquipoId");
+
+                    b.Navigation("Equipo");
                 });
 
             modelBuilder.Entity("TFG_Back.Models.Alumno", b =>

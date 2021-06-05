@@ -7,7 +7,6 @@ namespace TFG_Back.DTOs
 {
     public class ConsultaequipoDTO
     {
-
         public long Id { get; set; }
 
         public string Role { get; set; }

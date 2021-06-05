@@ -29,6 +29,8 @@ namespace TFG_Back.Helpers
 
             CreateMap<ProfesorDTO, Profesor>();
 
+            CreateMap<EquipoMensaje, EquipoMensajeDTO>();
+
             CreateMap<Asignatura, AsignaturaDTO>();
 
             CreateMap<AsignaturaDTO, Asignatura>();
@@ -48,10 +50,6 @@ namespace TFG_Back.Helpers
             CreateMap<Evaluacion, EvaluacionDTO>();
 
             CreateMap<EvaluacionDTO, Evaluacion>();
-
-            CreateMap<Mensaje, MensajeDTO>();
-
-            CreateMap<MensajeDTO, Mensaje>();
 
         }
         
