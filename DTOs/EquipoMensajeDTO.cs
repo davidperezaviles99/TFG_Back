@@ -12,6 +12,7 @@ namespace TFG_Back.DTOs
 
         public UserDTO User { get; set; }
 
+        public long EquipoId { get; set; }
         public EquipoDTO Equipo { get; set; }
 
         public Message Message { get; set; }

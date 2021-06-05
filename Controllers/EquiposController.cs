@@ -50,7 +50,7 @@ namespace TFG_Back.Controllers
             //    return NotFound();
             //}
 
-            List<Equipo> equipos = _context.Equipo.Include(x => x.Profesor).Include(x => x.Alumno).Include(x => x.Tutor).Where(d => d.Profesor.Id == consultaequipoDTO.Id || d.Tutor.Id == consultaequipoDTO.Id).ToList();
+            List<Equipo> equipos = _context.Equipo.Include(x => x.Profesor).Include(x => x.Alumno).Include(x => x.Tutor).Where(d => d.Profesor.Id == consultaequipoDTO.Id || d.Tutor.Id == consultaequipoDTO.Id || d.Alumno.Id == consultaequipoDTO.Id).ToList();
 
             //switch (consultaequipoDTO.Role)
             //{
@@ -329,7 +329,9 @@ namespace TFG_Back.Controllers
         public async Task<ActionResult<EquipoMensajeDTO>> OperatorDemandMessage(EquipoMensajeDTO equipoMensajeDTO)
         {
             var user = await _context.User.FindAsync(equipoMensajeDTO.User.Id);
-            var equipo = _mapper.Map<Equipo>(equipoMensajeDTO.Equipo);
+            var equipo = _context.Equipo.Find(equipoMensajeDTO.EquipoId);
+            //var equipo = _mapper.Map<Equipo>(equipoMensajeDTO.Equipo);
+
 
             EquipoMensaje equipoMensaje = new();
 
