@@ -11,9 +11,11 @@ using TFG_Back.Data;
 using TFG_Back.Models;
 using AutoMapper;
 using TFG_Back.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TFG_Back.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CursosController : Controller

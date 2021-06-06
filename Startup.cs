@@ -16,6 +16,7 @@ using TFG_Back.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TFG_Back.Auth;
 
 namespace TFG_Back
 {
@@ -32,8 +33,31 @@ namespace TFG_Back
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var key = "This is the demo key";
+
+            services
+               .AddAuthentication(x =>
+               {
+                   x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                   x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+               })
+               .AddJwtBearer(x =>
+               {
+                   x.RequireHttpsMetadata = false;
+                   x.SaveToken = true;
+                   x.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+                       ValidateAudience = false,
+                       ValidateIssuerSigningKey = true,
+                       ValidateIssuer = false
+                   };
+               });
+
+            services.AddAuthorization();
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc();
+            services.AddSingleton<IJwtAuthenticationService>(new JwtAuthenticationService(key));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -50,7 +74,7 @@ namespace TFG_Back
                                   });
             });
 
-                    services.AddControllers().AddNewtonsoftJson(options =>
+            services.AddControllers().AddNewtonsoftJson(options =>
                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 

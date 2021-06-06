@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MessagesController : Controller

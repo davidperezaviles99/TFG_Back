@@ -13,6 +13,13 @@ using TFG_Back.DTOs;
 using TFG_Back.Helpers;
 using AutoMapper;
 using AutoMapper.Configuration;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using TFG_Back.Auth;
 
 namespace TFG_Back.Controllers
 {
@@ -22,11 +29,13 @@ namespace TFG_Back.Controllers
     {
         private readonly TFG_BackContext _context;
         private readonly IMapper _mapper;
+        private readonly IJwtAuthenticationService _authService;
 
-        public UsersController(TFG_BackContext context, IMapper mapper)
+        public UsersController(TFG_BackContext context, IMapper mapper, IJwtAuthenticationService authService)
         {
             _context = context;
             _mapper = mapper;
+            _authService = authService;
         }
 
         // GET: api/Users
@@ -102,29 +111,41 @@ namespace TFG_Back.Controllers
             return new HttpResponseMessage(HttpStatusCode.Created);
         }
 
-        // POST: api/Users/login
+        //// POST: api/Users/login
+        //[HttpPost("login")]
+        //public async Task<ActionResult<UserDTO>> LoginUser(LoginDTO loginDTO)
+        //{
+        //    var user = await _context.User.Where(u => u.Email == loginDTO.Email).FirstOrDefaultAsync();
+
+        //    if (user == null)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    if (BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
+        //    {
+        //        var userDTO = _mapper.Map<UserDTO>(user);
+        //        return userDTO;
+        //    }
+        //    else
+        //    {
+        //        return Unauthorized();
+        //    }
+        //}
+
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<UserDTO>> LoginUser(LoginDTO loginDTO)
+        public IActionResult Authenticate([FromBody] LoginDTO user)
         {
-            var user = await _context.User.Where(u => u.Email == loginDTO.Email).FirstOrDefaultAsync();
+            var token = _authService.Authenticate(user.Email, user.Password);
 
-            if (user == null)
-            {
-                return BadRequest();
-            }
-
-            if (BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.Password))
-            {
-                var userDTO = _mapper.Map<UserDTO>(user);
-                return userDTO;
-            }
-            else
+            if (token == null)
             {
                 return Unauthorized();
             }
 
+            return Ok(token);
         }
-    
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
