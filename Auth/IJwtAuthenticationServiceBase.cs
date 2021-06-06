@@ -1,4 +1,6 @@
-﻿namespace TFG_Back.Auth
+﻿using TFG_Back.Models;
+
+namespace TFG_Back.Auth
 {
     public interface IJwtAuthenticationService
     {
