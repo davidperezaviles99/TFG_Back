@@ -15,7 +15,6 @@ using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AsignaturasController : Controller
@@ -53,7 +52,35 @@ namespace TFG_Back.Controllers
 
             return asignaturaDTO;
         }
-           
+
+        [HttpGet("getCursoAsignatura")]
+        public async Task<ActionResult<IEnumerable<CursoDTO>>> GetUserDiario(long id)
+        {
+            var cursoList = await _context.Curso.Include("Asignatura").ToListAsync();
+
+            foreach (Curso curso in cursoList)
+            {
+                curso.Asignatura = await _context.Asignatura.FirstOrDefaultAsync(u => u.Id == curso.Asignatura.Id);
+                //diario.Equipo = await _context.Equipo.Include("Alumno").Include("Tutor").Include("Profesor").FirstOrDefaultAsync(e => e.Id == diario.Equipo.Id);
+                //diario.Asignatura = await _context.Asignatura.Include("Profesor").FirstOrDefaultAsync(a => a.Id == diario.Asignatura.Id);
+            }
+
+            var cursos = cursoList.FindAll(c => c.Asignatura.Id == id);
+
+            var cursosdto = _mapper.Map<List<CursoDTO>>(cursos);
+
+            return cursosdto;
+
+            // var diario = await _context.Diario.Include("Equipo").Include("Asignatura").Include("User").FirstOrDefaultAsync(u => u.User.Id == id);
+
+            //if (diario == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return diario;
+        }
+
         // PUT: api/Asignaturas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]

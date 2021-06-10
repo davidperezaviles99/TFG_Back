@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TFG_Back.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CursosController : Controller

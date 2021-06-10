@@ -13,7 +13,6 @@ using TFG_Back.Models;
 
 namespace TFG_Back.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EquiposController : Controller
